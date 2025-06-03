@@ -4,6 +4,67 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  // Modal/Login elements
+  const userIcon = document.getElementById("user-icon");
+  const loginModal = document.getElementById("login-modal");
+  const closeLoginModal = document.getElementById("close-login-modal");
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+  let isTeacher = false;
+
+  // Show/hide modal
+  userIcon.addEventListener("click", () => {
+    loginModal.classList.remove("hidden");
+    loginError.classList.add("hidden");
+    loginForm.reset();
+  });
+  closeLoginModal.addEventListener("click", () => {
+    loginModal.classList.add("hidden");
+  });
+  window.addEventListener("click", (e) => {
+    if (e.target === loginModal) loginModal.classList.add("hidden");
+  });
+
+  // Login form submit
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+    try {
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Authorization": "Basic " + btoa(username + ":" + password) },
+      });
+      if (res.ok) {
+        isTeacher = true;
+        loginModal.classList.add("hidden");
+        loginError.classList.add("hidden");
+        await updateUIForRole();
+      } else {
+        const data = await res.json();
+        loginError.textContent = data.detail || "Login failed";
+        loginError.classList.remove("hidden");
+      }
+    } catch (err) {
+      loginError.textContent = "Login error. Try again.";
+      loginError.classList.remove("hidden");
+    }
+  });
+
+  // Check role on load
+  async function updateUIForRole() {
+    try {
+      const res = await fetch("/whoami");
+      const data = await res.json();
+      isTeacher = data.role === "teacher";
+      // Show/hide signup form and delete buttons
+      signupForm.style.display = isTeacher ? "block" : "none";
+      document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.style.display = isTeacher ? "inline-block" : "none";
+      });
+    } catch {}
+  }
+
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
@@ -30,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${details.participants
                   .map(
                     (email) =>
-                      `<li><span class="participant-email">${email}</span><button class="delete-btn" data-activity="${name}" data-email="${email}">❌</button></li>`
+                      `<li><span class="participant-email">${email}</span><button class="delete-btn" data-activity="${name}" data-email="${email}" style="display:none;">❌</button></li>`
                   )
                   .join("")}
               </ul>
@@ -60,6 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".delete-btn").forEach((button) => {
         button.addEventListener("click", handleUnregister);
       });
+
+      // Update UI for teacher/student
+      updateUIForRole();
     } catch (error) {
       activitiesList.innerHTML =
         "<p>Failed to load activities. Please try again later.</p>";
@@ -157,4 +221,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+  updateUIForRole();
 });

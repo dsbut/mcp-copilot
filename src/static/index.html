@@ -10,6 +10,9 @@
     <header>
       <h1>Mergington High School</h1>
       <h2>Extracurricular Activities</h2>
+      <div id="user-icon" title="Teacher Login">
+        <span style="font-size: 2rem; cursor: pointer;">👤</span>
+      </div>
     </header>
 
     <main>
@@ -46,5 +49,24 @@
     </footer>
 
     <script src="app.js"></script>
+    <!-- Login Modal -->
+    <div id="login-modal" class="hidden">
+      <div id="login-modal-content">
+        <span id="close-login-modal" style="float:right;cursor:pointer;font-size:1.5rem;">&times;</span>
+        <h3>Teacher Login</h3>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" required />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" required />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+        <div id="login-error" class="error hidden"></div>
+      </div>
+    </div>
   </body>
 </html>
