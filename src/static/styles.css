@@ -22,6 +22,46 @@ header {
   background-color: #1a237e;
   color: white;
   border-radius: 5px;
+  position: relative;
+}
+/* User icon in header */
+#user-icon {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 10;
+}
+
+/* Login Modal Styles */
+#login-modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#login-modal-content {
+  background: #fff;
+  padding: 30px 25px 20px 25px;
+  border-radius: 8px;
+  min-width: 300px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+#login-modal h3 {
+  margin-bottom: 18px;
+  color: #1a237e;
+}
+
+#login-error {
+  margin-top: 10px;
 }
 
 header h1 {
